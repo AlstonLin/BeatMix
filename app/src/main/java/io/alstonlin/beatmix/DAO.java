@@ -52,8 +52,6 @@ public class DAO {
      */
     public static DAO getInstance(){
         if (instance == null) instance = new DAO();
-        else if (instance.player == null) throw new IllegalStateException("Player must first be set " +
-                "immediately after first get!");
         return instance;
     }
 
@@ -67,6 +65,12 @@ public class DAO {
         socket.connect();
         socket.on(Socket.EVENT_CONNECT, connectListener).on("command", playChordListener).on("end", endChordListener)
                 .on(Socket.EVENT_DISCONNECT, disconntectListener);
+    }
+
+    public void joinRoom(String code) throws JSONException {
+        JSONObject object = new JSONObject();
+        object.put("code", code);
+        socket.emit("join", object);
     }
 
     public void sendPlayChord(boolean major, int n) throws JSONException {

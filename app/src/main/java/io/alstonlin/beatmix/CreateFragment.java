@@ -1,6 +1,7 @@
 package io.alstonlin.beatmix;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -87,16 +88,17 @@ public class CreateFragment extends Fragment implements Playable {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_create, container, false);
+        View view = activity.getLayoutInflater().inflate(R.layout.fragment_create, container, false);
         try {
             setupPd();
-        } catch (IOException e) {
-            activity.finish();
+            DAO.getInstance().setPlayable(this);
+            setupButtons(view);
+        } catch (Exception e){
+            e.printStackTrace();
         }
-        DAO.getInstance().setPlayable(this);
-        setupButtons(view);
         return view;
     }
+
 
     @Override
     public void onStart() {
@@ -120,7 +122,8 @@ public class CreateFragment extends Fragment implements Playable {
         AudioParameters.init(activity);
         int srate = Math.max(MIN_SAMPLE_RATE, AudioParameters.suggestSampleRate());
         PdAudio.initAudio(srate, 0, 2, 1, true);
-        File dir = activity.getFilesDir();
+        File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/BeatMix");
+        if (!dir.exists()) dir.mkdirs();
         File patchFile = new File(dir, "chords.pd");
         IoUtils.extractZipResource(getResources().openRawResource(R.raw.patch), dir, true);
         PdBase.openPatch(patchFile.getAbsolutePath());

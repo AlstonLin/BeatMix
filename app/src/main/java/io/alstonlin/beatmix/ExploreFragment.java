@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 public class ExploreFragment extends Fragment {
 
-    private static final String ARG_ACTIVITY = "activity";
+    private static final String ARG_ACTIVITY = "ACTIVITY";
     private MainActivity activity;
 
     /**
@@ -18,7 +18,7 @@ public class ExploreFragment extends Fragment {
      * @return The new Fragment instance
      */
     public static ExploreFragment newInstance(MainActivity activity) {
-        final ExploreFragment fragment = new ExploreFragment();
+        ExploreFragment fragment = new ExploreFragment();
         fragment.activity = activity;
         return fragment;
     }
@@ -47,5 +47,4 @@ public class ExploreFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_explore, container, false);
         return v;
     }
-
 }

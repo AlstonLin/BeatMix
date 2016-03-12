@@ -9,36 +9,20 @@ import android.support.v7.app.AppCompatActivity;
  * Main Activity (and only); Handles all events and the lifecycle of the app.
  */
 public class MainActivity extends AppCompatActivity {
-    private TabLayout tabLayout;
+    private ViewPager pager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setupTabs();
         setupViewPager();
-    }
-
-    /**
-     * Sets up the tabs of the TabLayout.
-     */
-    private void setupTabs(){
-        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-    }
-
-    /**
-     * Sets up the ViewPager, the PagerAdapter and the Listeners.
-     */
-    private void setupViewPager(){
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-        final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), this);
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.addTab(tabLayout.newTab().setText("Explore"));
+        tabLayout.addTab(tabLayout.newTab().setText("Create"));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
+                pager.setCurrentItem(tab.getPosition());
             }
 
             @Override
@@ -49,5 +33,15 @@ public class MainActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+        pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+    }
+
+    /**
+     * Sets up the ViewPager, the PagerAdapter and the Listeners.
+     */
+    private void setupViewPager(){
+        PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), this);
+        pager = (ViewPager) findViewById(R.id.pager);
+        pager.setAdapter(adapter);
     }
 }
