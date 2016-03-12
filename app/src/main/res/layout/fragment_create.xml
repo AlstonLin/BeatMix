@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="io.alstonlin.beatmix.ExploreFragment">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/guitar0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="#FFE0B2"
+            app:elevation="4dp" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/guitar1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="#FFE0B2"
+            app:elevation="4dp" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/guitar2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="#FFD180"
+            app:elevation="4dp" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/guitar3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="#FFCC80"
+            app:elevation="4dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/guitar4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="#FFB74D"
+            app:elevation="4dp" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/guitar5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="#FFAB40"
+            app:elevation="4dp" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/guitar6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="#FFA726"
+            app:elevation="4dp" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/guitar7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="#FF9800"
+            app:elevation="4dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/guitar8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="#FB8C00"
+            app:elevation="4dp" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/guitar9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="#F57C00"
+            app:elevation="4dp" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/guitar10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="#FF6D00"
+            app:elevation="4dp" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/guitar11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="#EF6C00"
+            app:elevation="4dp" />
+    </LinearLayout>
+</LinearLayout>
