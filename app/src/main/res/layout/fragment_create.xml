@@ -93,4 +93,16 @@
             app:backgroundTint="#EF6C00"
             app:elevation="4dp" />
     </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Record"
+        android:id="@+id/record" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Playback"
+        android:id="@+id/playback" />
 </LinearLayout>

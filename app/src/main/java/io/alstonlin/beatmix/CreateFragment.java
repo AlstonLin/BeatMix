@@ -1,5 +1,6 @@
 package io.alstonlin.beatmix;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import org.json.JSONException;
 import org.puredata.android.io.AudioParameters;
@@ -17,9 +20,14 @@ import org.puredata.core.utils.IoUtils;
 import java.io.File;
 import java.io.IOException;
 
+import javax.microedition.khronos.egl.EGLDisplay;
+
 
 public class CreateFragment extends Fragment implements Playable {
 
+    private Song currentSong;
+    private boolean recording = false;
+    private double startTime;
     private MainActivity activity;
     private static final int MIN_SAMPLE_RATE = 44100;
     private View.OnTouchListener touchListener = new View.OnTouchListener() {
@@ -142,11 +150,71 @@ public class CreateFragment extends Fragment implements Playable {
         view.findViewById(R.id.guitar9).setOnTouchListener(touchListener);
         view.findViewById(R.id.guitar10).setOnTouchListener(touchListener);
         view.findViewById(R.id.guitar11).setOnTouchListener(touchListener);
+        view.findViewById(R.id.record).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleRecord();
+            }
+        });
     }
 
     private void cleanup() {
         PdAudio.release();
         PdBase.release();
+    }
+
+    private void toggleRecord(){
+        recording = !recording;
+        if (recording){
+            currentSong = new Song();
+            startTime = System.currentTimeMillis();
+        }else {
+            // Repeat song
+            final Playback playback = new Playback(currentSong, this, true);
+            playback.execute();
+            // Dialog Window
+            final Dialog dialog = new Dialog(activity);
+            dialog.setContentView(R.layout.send_dialog);
+            dialog.setTitle("Upload Song");
+            dialog.show();
+            // Actions for buttons
+            final EditText title = (EditText) dialog.findViewById(R.id.title);
+            final EditText author = (EditText) dialog.findViewById(R.id.author);
+            Button upload = (Button) dialog.findViewById(R.id.upload);
+            Button cancel = (Button) dialog.findViewById(R.id.cancel);
+            upload.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    currentSong.setTitle(String.valueOf(title.getText()));
+                    currentSong.setAuthor(String.valueOf(author.getText()));
+                    try {
+                        DAO.getInstance().sendSong(currentSong);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    dialog.dismiss();
+                    playback.cancel(false);
+                    currentSong = null;
+                }
+            });
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    playback.cancel(false);
+                    currentSong = null;
+                }
+            });
+        }
+    }
+
+    private void playback(){
+        Playback playback = new Playback(DAO.getInstance().getSong(), this, false);
+        playback.execute();
+    }
+
+    public synchronized void playbackChord(boolean major, int n){
+        PdBase.sendList("playchord", major ? 1 : 0, n);
     }
 
     /**
@@ -155,7 +223,10 @@ public class CreateFragment extends Fragment implements Playable {
      * @param n The note of the key represented as an integer
      */
     public void playChord(boolean major, int n) {
-        PdBase.sendList("playchord", major ? 1 : 0, n);
+        if (recording){
+            currentSong.addNote(System.currentTimeMillis() - startTime, "playchord", major, n);
+        }
+        playbackChord(major, n);
     }
 
     /**

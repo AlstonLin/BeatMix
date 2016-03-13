@@ -87,4 +87,16 @@ public class DAO {
     public void setPlayable(Playable player){
         this.player = player;
     }
+
+    public void sendSong(Song s) throws JSONException {
+        JSONObject object = new JSONObject();
+        object.put("title", s.getTitle());
+        object.put("author", s.getAuthor());
+        object.put("content", s.toJSON());
+        socket.emit("addSong", object);
+    }
+
+    public Song getSong(){
+        return null;
+    }
 }
