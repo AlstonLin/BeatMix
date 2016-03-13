@@ -5,5 +5,6 @@ package io.alstonlin.beatmix;
  */
 public interface Playable {
     void playChord(boolean major, int n);
+    void endChord();
     void playbackChord(boolean major, int n);
 }

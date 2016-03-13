@@ -20,16 +20,13 @@ import org.puredata.core.utils.IoUtils;
 import java.io.File;
 import java.io.IOException;
 
-import javax.microedition.khronos.egl.EGLDisplay;
 
-
-public class CreateFragment extends Fragment implements Playable {
+public class CreateFragment extends Fragment implements Playable{
 
     private Song currentSong;
     private boolean recording = false;
     private double startTime;
     private MainActivity activity;
-    private static final int MIN_SAMPLE_RATE = 44100;
     private View.OnTouchListener touchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
@@ -98,43 +95,12 @@ public class CreateFragment extends Fragment implements Playable {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = activity.getLayoutInflater().inflate(R.layout.fragment_create, container, false);
         try {
-            setupPd();
             DAO.getInstance().setPlayable(this);
             setupButtons(view);
         } catch (Exception e){
             e.printStackTrace();
         }
         return view;
-    }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        PdAudio.startAudio(activity);
-    }
-
-    @Override
-    public void onStop() {
-        PdAudio.stopAudio();
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroy() {
-        cleanup();
-        super.onDestroy();
-    }
-
-    private void setupPd() throws IOException {
-        AudioParameters.init(activity);
-        int srate = Math.max(MIN_SAMPLE_RATE, AudioParameters.suggestSampleRate());
-        PdAudio.initAudio(srate, 0, 2, 1, true);
-        File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/BeatMix");
-        if (!dir.exists()) dir.mkdirs();
-        File patchFile = new File(dir, "chords.pd");
-        IoUtils.extractZipResource(getResources().openRawResource(R.raw.patch), dir, true);
-        PdBase.openPatch(patchFile.getAbsolutePath());
     }
 
     private void setupButtons(View view){
@@ -158,11 +124,6 @@ public class CreateFragment extends Fragment implements Playable {
         });
     }
 
-    private void cleanup() {
-        PdAudio.release();
-        PdBase.release();
-    }
-
     private void toggleRecord(){
         recording = !recording;
         if (recording){
@@ -170,7 +131,7 @@ public class CreateFragment extends Fragment implements Playable {
             startTime = System.currentTimeMillis();
         }else {
             // Repeat song
-            final Playback playback = new Playback(currentSong, this, true);
+            final Playback playback = new Playback(currentSong, activity, true);
             playback.execute();
             // Dialog Window
             final Dialog dialog = new Dialog(activity);
@@ -208,11 +169,6 @@ public class CreateFragment extends Fragment implements Playable {
         }
     }
 
-    private void playback(){
-        Playback playback = new Playback(DAO.getInstance().getSong(), this, false);
-        playback.execute();
-    }
-
     public synchronized void playbackChord(boolean major, int n){
         PdBase.sendList("playchord", major ? 1 : 0, n);
     }
@@ -226,7 +182,7 @@ public class CreateFragment extends Fragment implements Playable {
         if (recording){
             currentSong.addNote(System.currentTimeMillis() - startTime, "playchord", major, n);
         }
-        playbackChord(major, n);
+        activity.playbackChord(major, n);
     }
 
     /**

@@ -9,19 +9,10 @@ import java.util.ArrayList;
 public class Song {
     private ArrayList<Note> notes = new ArrayList<>();
     private int nextNote = 0;
+    private OnSongReadyListener listener;
     private String title;
+    private String id;
     private String author;
-
-    public static Song fromJSON(JSONObject obj) throws JSONException {
-        JSONArray json = obj.getJSONArray("data");
-        Song song = new Song();
-        for (int i = 0; i < json.length(); i++){
-            JSONObject jsonNote = json.getJSONObject(i);
-            song.addNote(jsonNote.getDouble("time"), jsonNote.getString("command"), jsonNote.getBoolean("major"),
-                    jsonNote.getInt("val"));
-        }
-        return song;
-    }
 
     public void addNote(double time, String command, boolean major, int val){
         notes.add(new Note(time, command, major, val));
@@ -43,6 +34,16 @@ public class Song {
         Note n = notes.get(nextNote);
         nextNote++;
         return n;
+    }
+
+    public void loadContentFromJson(JSONObject obj) throws JSONException {
+        JSONArray json = obj.getJSONArray("data");
+        for (int i = 0; i < json.length(); i++){
+            JSONObject jsonNote = json.getJSONObject(i);
+            addNote(jsonNote.getDouble("time"), jsonNote.getString("command"), jsonNote.getBoolean("major"),
+                    jsonNote.getInt("val"));
+        }
+        if (listener != null) listener.onSongReady(this);
     }
 
     public JSONObject toJSON() throws JSONException {
@@ -68,12 +69,24 @@ public class Song {
         return author;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public void setOnSongReadyListener(OnSongReadyListener listener){
+        this.listener = listener;
     }
 
     static class Note {
